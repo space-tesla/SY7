@@ -1,0 +1,40 @@
+Model the following information as a document database. A customer operates his bank account, does various transactions, and gets the banking services.
+Assume appropriate attributes and collections as per the query requirements.
+Insert at least 5 documents in each collection.
+Answer the following queries:
+a. List names of all customers whose first name starts with a “S”.
+b. List all customers who have opened an account on 1/1/2020 in ___branch.
+c. List the names of customers where acctype="Saving".
+d. Count the total number of loan account holders in ______ branch.
+Program:
+
+  
+ 
+# Start MongoDB   
+mongosh
+
+# Create and select the database
+use BankingDatabase
+
+# Create and insert documents into the 'customers' collection (5 records)
+db.customers.insertMany([
+  { _id: 1, first_name: "Sanjay", last_name: "Patil", accounts: [{ acctype: "Saving", branch: "Nashik", opening_date: "2020-01-01", balance: 10000 }] },
+  { _id: 2, first_name: "Rajesh", last_name: "Shinde", accounts: [{ acctype: "Current", branch: "Mumbai", opening_date: "2019-12-15", balance: 15000 }] },
+  { _id: 3, first_name: "Siddharth", last_name: "Mhaske", accounts: [{ acctype: "Saving", branch: "Nashik", opening_date: "2020-01-01", balance: 20000 }] },
+  { _id: 4, first_name: "Vishal", last_name: "Nirmal", accounts: [{ acctype: "Loan", branch: "Pune", opening_date: "2018-11-20", balance: 30000 }] },
+  { _id: 5, first_name: "Suresh", last_name: "Joshi", accounts: [{ acctype: "Saving", branch: "Nashik", opening_date: "2020-01-01", balance: 5000 }] }
+])
+
+# a. List names of all customers whose first name starts with a "S"
+db.customers.find({ "first_name": /^S/ }, { first_name: 1, last_name: 1, _id: 0 })
+
+# b. List all customers who have opened an account on 1/1/2020 in Nashik branch
+db.customers.find({ "accounts.opening_date": "2020-01-01", "accounts.branch": "Nashik" }, { first_name: 1, last_name: 1, _id: 0 })
+
+# c. List the names of customers where acctype="Saving"
+db.customers.find({ "accounts.acctype": "Saving" }, { first_name: 1, last_name: 1, _id: 0 })
+
+# d. Count the total number of loan account holders in Nashik branch
+db.customers.find({ "accounts.acctype": "Loan", "accounts.branch": "Nashik" }).count()
+
+
